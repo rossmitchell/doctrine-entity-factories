@@ -3,6 +3,7 @@ namespace Dittto\DoctrineEntityFactories\Doctrine\ORM\Decorator;
 
 use Dittto\DoctrineEntityFactories\Doctrine\ORM\Mapping\EntityFactoryAware;
 use Dittto\DoctrineEntityFactories\Doctrine\ORM\Mapping\EntityFactoryInterface;
+use Dittto\DoctrineEntityFactories\Doctrine\ORM\Mapping\GenericFactoryInterface;
 use Doctrine\ORM\Decorator\EntityManagerDecorator;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -18,6 +19,14 @@ class EntityFactoryManagerDecorator extends EntityManagerDecorator implements En
         $metadataFactory = $this->wrapped->getMetadataFactory();
         if ($metadataFactory instanceof EntityFactoryAware) {
             $metadataFactory->addEntityFactory($name, $entityFactory);
+        }
+    }
+
+    public function addGenericFactory(GenericFactoryInterface $genericFactory): void
+    {
+        $metadataFactory = $this->wrapped->getMetadataFactory();
+        if ($metadataFactory instanceof EntityFactoryAware) {
+            $metadataFactory->addGenericFactory($genericFactory);
         }
     }
 }

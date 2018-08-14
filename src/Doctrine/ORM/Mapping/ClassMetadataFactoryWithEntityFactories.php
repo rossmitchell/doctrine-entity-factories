@@ -11,11 +11,13 @@ class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory imple
 {
     /** @var EntityFactoryInterface[] */
     public static $entityFactories = [];
+    /** @var GenericFactoryInterface|null */
+    public static $genericFactory;
 
     /** @var EntityManagerInterface */
     private $em;
 
-    public function setEntityManager(EntityManagerInterface $em): void
+    public function setEntityManager(EntityManagerInterface $em)
     {
         parent::setEntityManager($em);
         $this->em = $em;
@@ -35,6 +37,11 @@ class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory imple
         self::$entityFactories[$name] = $entityFactory;
     }
 
+    public function addGenericFactory(GenericFactoryInterface $genericFactory): void
+    {
+        self::$genericFactory = $genericFactory;
+    }
+
     /**
      * @return EntityFactoryInterface[]
      */
@@ -43,12 +50,11 @@ class ClassMetadataFactoryWithEntityFactories extends ClassMetadataFactory imple
         return self::$entityFactories;
     }
 
-
-    protected function wakeupReflection(ClassMetadata $class, ReflectionService $reflService): void
+    public function wakeupReflection(ClassMetadata $class, ReflectionService $reflService)
     {
         parent::wakeupReflection($class, $reflService);
         if ($class instanceof ClassMetadataWithEntityFactories) {
-            $class->setFactories(self::$entityFactories);
+            $class->setFactories(self::$entityFactories, self::$genericFactory);
         }
     }
 }
